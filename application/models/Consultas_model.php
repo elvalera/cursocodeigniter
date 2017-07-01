@@ -23,6 +23,28 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 			/*select * from persona where cedula = $usu and clave = $cont*/
 		}
 
+		function consultar(){
+			$this->db->select('*');
+			$this->db->from('persona p');
+			$this->db->join('origen o', 'o.idorigen = p.origen_idorigen');
+			$query = $this->db->get();
+			return $query;
+
+		}
+
+		function consultar_user($id){
+			$this->db->select('*');
+			$this->db->from('persona p');
+			$this->db->join('origen o', 'o.idorigen = p.origen_idorigen');
+			$this->db->where('idpersona', $id);
+			$query = $this->db->get();
+			return $query;
+		}
+
+
+		
+
+
 	
 
 }

@@ -21,8 +21,7 @@ class Login extends CI_Controller {
 		$usuario = $this->input->post('usuario');
 		$clave = $this->input->post('clave');
 
-		//se carga un modelo
-		$this->load->model('consultas_model');
+		
 		//carga la funcion dentro del modelo
 		$existe = $this->consultas_model->validar($usuario,$clave);
 		
@@ -54,9 +53,33 @@ class Login extends CI_Controller {
 		/*Este condicional tiene como fin validar que logueado esta en true, esto certifica
 		que esta logueado la persona que desea ingresar a esta funcion*/
 		if ($this->session->userdata('logueado')) {
+		
+			$data = array(
+				'nombre'	 	=> $this->session->userdata('nombre'),
+         		'apellido' 		=> $this->session->userdata('apellido'));
+
+			$data['datos'] = $this->consultas_model->consultar();
+
+			$this->load->view('menu',$data);
+			$this->load->view('principal',$data);
 			
-			$this->load->view('principal');
-			
+		}else{
+			$this->session->set_flashdata('error', 'Sus datos son incorrectos');
+			redirect('login','refresh');
+		}
+
+	}
+
+	function consultar(){
+		if ($this->session->userdata('logueado')) {
+			$id = $this->uri->segment(3);
+			$data['id'] = $this->consultas_model->consultar_user($id);
+
+
+
+		
+			$this->load->view('consulta_user', $data);
+
 		}else{
 			$this->session->set_flashdata('error', 'Sus datos son incorrectos');
 			redirect('login','refresh');
